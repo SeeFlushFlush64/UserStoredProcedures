@@ -182,3 +182,4 @@ C:\Users\micha\source\repos\PalaganasTechnicalExam\PalaganasTechnicalExam\bin\De
 C:\Users\micha\source\repos\PalaganasTechnicalExam\PalaganasTechnicalExam\obj\Debug\net8.0\PalaganasTechnicalExam.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\micha\source\repos\PalaganasTechnicalExam\PalaganasTechnicalExam\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Mvc.dll
 C:\Users\micha\source\repos\PalaganasTechnicalExam\PalaganasTechnicalExam\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Shared.dll
+C:\Users\micha\source\repos\PalaganasTechnicalExam\PalaganasTechnicalExam\obj\Debug\net8.0\PalaganasTechnicalExam.sourcelink.json

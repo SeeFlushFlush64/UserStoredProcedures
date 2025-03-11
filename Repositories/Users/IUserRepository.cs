@@ -9,6 +9,7 @@ namespace PalaganasTechnicalExam.Repositories.Users
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int userId);
+        Task<List<User>> SearchUsersAsync(string searchQuery);
     }
 
 }

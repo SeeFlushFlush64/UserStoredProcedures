@@ -21,12 +21,21 @@ namespace PalaganasTechnicalExam.Controllers
             _addUserValidator = addUserValidator;
         }
 
+   
+
         [HttpGet]
-        public async Task<IActionResult> List()
+        public async Task<IActionResult> List(string? searchQuery)
         {
             var users = await _userRepository.GetAllUsersAsync();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                users = await _userRepository.SearchUsersAsync(searchQuery);
+            }
+
             return View(users);
         }
+
 
         [HttpGet]
         public IActionResult Add()
@@ -95,5 +104,7 @@ namespace PalaganasTechnicalExam.Controllers
             TempData["DeletedSuccessfully"] = "User deleted successfully";
             return RedirectToAction("List");
         }
+
+
     }
 }

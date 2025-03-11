@@ -97,5 +97,13 @@ namespace PalaganasTechnicalExam.Repositories.Users
                 throw;
             }
         }
+
+        public async Task<List<User>> SearchUsersAsync(string searchQuery)
+        {
+            return await _context.Users
+                .FromSqlInterpolated($"EXEC SearchUsers {searchQuery}")
+                .ToListAsync();
+        }
+
     }
 }
