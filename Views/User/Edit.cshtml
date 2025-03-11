@@ -1,0 +1,33 @@
+﻿@model PalaganasTechnicalExam.Models.Entities.User
+<h1>
+	Edit User
+</h1>
+<form method="post">
+	<br />
+	<div class="form-group">
+		<label asp-for="UserId" class="form-label">ID</label>
+		<input type="text" class="form-control" asp-for="UserId" placeholder="John" readonly>
+	</div>
+	<br />
+	<div class="form-group">
+		<label asp-for="FirstName" class="form-label">First Name</label>
+		<input type="text" class="form-control" asp-for="FirstName" placeholder="John">
+		<span asp-validation-for="FirstName" class="text-danger"></span> <!-- Correct syntax -->
+	</div>
+	<br />
+	<div class="form-group">
+		<label asp-for="LastName" class="form-label">Last Name</label>
+		<input type="text" class="form-control" asp-for="LastName" placeholder="Doe">
+		<span asp-validation-for="LastName" class="text-danger"></span> <!-- Correct syntax -->
+	</div>
+	<br />
+	<div class="form-group">
+		<label asp-for="Email" class="form-label">Email</label>
+		<input type="email" class="form-control" asp-for="Email" placeholder="johndoe@gmail.com">
+		<span asp-validation-for="Email" class="text-danger"></span> <!-- Correct syntax -->
+	</div>
+	<br/>
+	<div class="form-group">
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</div>
+</form>

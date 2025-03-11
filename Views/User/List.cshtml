@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model List<PalaganasTechnicalExam.Models.Entities.User>
+<form asp-action="List" method="get" class="mb-3 d-flex">
+    <input type="text" name="searchQuery" class="form-control me-2" placeholder="Search users..." value="@Context.Request.Query["searchQuery"]">
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<h1>
+    Users
+</h1>
+
+<form id="deleteForm" method="post" asp-action="Delete">
+    <input type="hidden" name="id" id="deleteUserId" />
+</form>
+
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+@if (TempData["AddedSuccessfully"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["AddedSuccessfully"]
+    </div>
+}
+@if (TempData["UpdatedSuccessfully"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["UpdatedSuccessfully"]
+    </div>
+}
+@if (TempData["DeletedSuccessfully"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["DeletedSuccessfully"]
+    </div>
+}
+@if(Model is null)
+{
+    <p>No users added. Add users to store here.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>
+                        @user.FirstName
+                    </td>
+                    <td>
+                        @user.LastName
+                    </td>
+                    <td>
+                        @user.Email
+                    </td>
+                    <td>
+                        <a class="btn btn-primary" asp-route-id=@user.UserId asp-controller="User" asp-action="Edit">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete(@user.UserId)">Delete</button>
+                    </td>
+                  
+                        
+                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<script>
+    function confirmDelete(userId) {
+        if (confirm("Are you sure you want to delete this user?")) {
+            document.getElementById("deleteUserId").value = userId;
+            document.getElementById("deleteForm").submit();
+        }
+    }
+</script>
