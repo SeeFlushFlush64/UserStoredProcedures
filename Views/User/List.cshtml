@@ -3,7 +3,7 @@
 *@
 @{
 }
-@model List<PalaganasTechnicalExam.Models.Entities.User>
+@model PalaganasTechnicalExam.Models.ViewModels.PaginatedUserListViewModel
 <form asp-action="List" method="get" class="mb-3 d-flex">
     <input type="text" name="searchQuery" class="form-control me-2" placeholder="Search users..." value="@Context.Request.Query["searchQuery"]">
     <button type="submit" class="btn btn-primary">Search</button>
@@ -57,7 +57,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var user in Model)
+            @foreach (var user in Model.Users)
             {
                 <tr>
                     <td>
@@ -80,6 +80,31 @@ else
             }
         </tbody>
     </table>
+
+    <nav class="d-flex justify-content-center">
+        <ul class="pagination">
+            @if (Model.PageNumber > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="List" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-searchQuery="@Model.SearchQuery">Previous</a>
+                </li>
+            }
+
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(Model.PageNumber == i ? "active" : "")">
+                    <a class="page-link" asp-action="List" asp-route-pageNumber="@i" asp-route-searchQuery="@Model.SearchQuery">@i</a>
+                </li>
+            }
+
+            @if (Model.PageNumber < Model.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-action="List" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-searchQuery="@Model.SearchQuery">Next</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }
 <script>
     function confirmDelete(userId) {

@@ -15,6 +15,7 @@ namespace PalaganasTechnicalExam.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<AddUserViewModel> _addUserValidator;
+        private const int PageSize = 12;
         public UserController(IUserRepository userRepository, IValidator<AddUserViewModel> addUserValidator)
         {
             _userRepository = userRepository;
@@ -24,7 +25,7 @@ namespace PalaganasTechnicalExam.Controllers
    
 
         [HttpGet]
-        public async Task<IActionResult> List(string? searchQuery)
+        public async Task<IActionResult> List(string? searchQuery, int pageNumber = 1)
         {
             var users = await _userRepository.GetAllUsersAsync();
 
@@ -33,7 +34,18 @@ namespace PalaganasTechnicalExam.Controllers
                 users = await _userRepository.SearchUsersAsync(searchQuery);
             }
 
-            return View(users);
+            int totalUsers = users.Count();
+            var pagedUsers = users.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
+
+            var viewModel = new PaginatedUserListViewModel
+            {
+                Users = pagedUsers,
+                PageNumber = pageNumber,
+                TotalPages = (int)Math.Ceiling(totalUsers / (double)PageSize),
+                SearchQuery = searchQuery
+            };
+
+            return View(viewModel);
         }
 
 

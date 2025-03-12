@@ -101,8 +101,9 @@ namespace PalaganasTechnicalExam.Repositories.Users
         public async Task<List<User>> SearchUsersAsync(string searchQuery)
         {
             return await _context.Users
-                .FromSqlInterpolated($"EXEC SearchUsers {searchQuery}")
+                .FromSqlRaw("EXEC SearchUsers @SearchQuery", new SqlParameter("@SearchQuery", searchQuery))
                 .ToListAsync();
+
         }
 
     }
