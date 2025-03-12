@@ -4,6 +4,21 @@
 @{
 }
 @model PalaganasTechnicalExam.Models.ViewModels.PaginatedUserListViewModel
+
+
+<style>
+    th a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    th a:hover {
+        color: #007bff;
+    }
+</style>
+
+
+
 <form asp-action="List" method="get" class="mb-3 d-flex">
     <input type="text" name="searchQuery" class="form-control me-2" placeholder="Search users..." value="@Context.Request.Query["searchQuery"]">
     <button type="submit" class="btn btn-primary">Search</button>
@@ -50,9 +65,33 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
+                <th>
+                    <a asp-action="List" asp-route-sortColumn="FirstName" asp-route-sortOrder="@(Model.SortColumn == "FirstName" && Model.SortOrder == "ASC" ? "DESC" : "ASC")">
+                        First Name
+                        @if (Model.SortColumn == "FirstName")
+                        {
+                            <span>@(Model.SortOrder == "ASC" ? "▲" : "▼")</span>
+                        }
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="List" asp-route-sortColumn="LastName" asp-route-sortOrder="@(Model.SortColumn == "LastName" && Model.SortOrder == "ASC" ? "DESC" : "ASC")">
+                        Last Name
+                        @if (Model.SortColumn == "LastName")
+                        {
+                            <span>@(Model.SortOrder == "ASC" ? "▲" : "▼")</span>
+                        }
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="List" asp-route-sortColumn="Email" asp-route-sortOrder="@(Model.SortColumn == "Email" && Model.SortOrder == "ASC" ? "DESC" : "ASC")">
+                        Email
+                        @if (Model.SortColumn == "Email")
+                        {
+                            <span>@(Model.SortOrder == "ASC" ? "▲" : "▼")</span>
+                        }
+                    </a>
+                </th>
                 <th>Actions</th>
             </tr>
         </thead>

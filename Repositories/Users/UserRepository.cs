@@ -106,5 +106,24 @@ namespace PalaganasTechnicalExam.Repositories.Users
 
         }
 
+        public async Task<List<User>> GetSortedUsersAsync(string? searchQuery, string sortColumn, string sortOrder, int pageNumber, int pageSize)
+        {
+            return await _context.Users.FromSqlRaw(
+                "EXEC GetSortedUsers @SearchQuery, @SortColumn, @SortOrder, @PageNumber, @PageSize",
+                new SqlParameter("@SearchQuery", searchQuery ?? (object)DBNull.Value),
+                new SqlParameter("@SortColumn", sortColumn),
+                new SqlParameter("@SortOrder", sortOrder),
+                new SqlParameter("@PageNumber", pageNumber),
+                new SqlParameter("@PageSize", pageSize)
+            ).ToListAsync();
+        }
+
+
+
+        public int GetTotalUserCount()
+        {
+            return _context.Users.Count();
+        }
+
     }
 }

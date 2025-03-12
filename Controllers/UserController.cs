@@ -22,27 +22,46 @@ namespace PalaganasTechnicalExam.Controllers
             _addUserValidator = addUserValidator;
         }
 
-   
 
+
+        //[HttpGet]
+        //public async Task<IActionResult> List(string? searchQuery, int pageNumber = 1)
+        //{
+        //    var users = await _userRepository.GetAllUsersAsync();
+
+        //    if (!string.IsNullOrEmpty(searchQuery))
+        //    {
+        //        users = await _userRepository.SearchUsersAsync(searchQuery);
+        //    }
+
+        //    int totalUsers = users.Count();
+        //    var pagedUsers = users.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
+
+        //    var viewModel = new PaginatedUserListViewModel
+        //    {
+        //        Users = pagedUsers,
+        //        PageNumber = pageNumber,
+        //        TotalPages = (int)Math.Ceiling(totalUsers / (double)PageSize),
+        //        SearchQuery = searchQuery
+        //    };
+
+        //    return View(viewModel);
+        //}
         [HttpGet]
-        public async Task<IActionResult> List(string? searchQuery, int pageNumber = 1)
+        public async Task<IActionResult> List(string? searchQuery, string sortColumn = "FirstName", string sortOrder = "ASC", int pageNumber = 1)
         {
-            var users = await _userRepository.GetAllUsersAsync();
+            var users = await _userRepository.GetSortedUsersAsync(searchQuery, sortColumn, sortOrder, pageNumber, PageSize);
 
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                users = await _userRepository.SearchUsersAsync(searchQuery);
-            }
-
-            int totalUsers = users.Count();
-            var pagedUsers = users.Skip((pageNumber - 1) * PageSize).Take(PageSize).ToList();
+            int totalUsers = _userRepository.GetTotalUserCount();
 
             var viewModel = new PaginatedUserListViewModel
             {
-                Users = pagedUsers,
+                Users = users,
                 PageNumber = pageNumber,
                 TotalPages = (int)Math.Ceiling(totalUsers / (double)PageSize),
-                SearchQuery = searchQuery
+                SearchQuery = searchQuery,
+                SortColumn = sortColumn,
+                SortOrder = sortOrder
             };
 
             return View(viewModel);
