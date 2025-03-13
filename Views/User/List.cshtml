@@ -1,4 +1,5 @@
-﻿@*
+﻿@using PalaganasTechnicalExam.Helpers
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
@@ -8,12 +9,12 @@
 
 <style>
     th a {
-        text-decoration: none;
-        color: inherit;
+    text-decoration: none;
+    color: inherit;
     }
 
     th a:hover {
-        color: #007bff;
+    color: #007bff;
     }
 </style>
 
@@ -62,9 +63,47 @@
 }
 else
 {
+    @* <form asp-action="Index" method="get"> *@
+    @*     <div class="dropdown"> *@
+    @*         <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false"> *@
+    @*             <i class="bi bi-filter"></i> Filter Null Fields *@
+    @*         </button> *@
+    @*         <ul class="dropdown-menu" aria-labelledby="filterDropdown"> *@
+    @*             <li class="dropdown-item"> *@
+    @*                 <label> *@
+    @*                     <input type="checkbox" name="filterNullFirstName" value="true" onchange="this.form.submit()" *@
+    @*                     @(Context.Request.Query["filterNullFirstName"] == "true" ? "checked" : "") /> *@
+    @*                     Null First Name *@
+    @*                 </label> *@
+    @*             </li> *@
+    @*             <li class="dropdown-item"> *@
+    @*                 <label> *@
+    @*                     <input type="checkbox" name="filterNullLastName" value="true" onchange="this.form.submit()" *@
+    @*                     @(Context.Request.Query["filterNullLastName"] == "true" ? "checked" : "") /> *@
+    @*                     Null Last Name *@
+    @*                 </label> *@
+    @*             </li> *@
+    @*             <li class="dropdown-item"> *@
+    @*                 <label> *@
+    @*                     <input type="checkbox" name="filterNullEmail" value="true" onchange="this.form.submit()" *@
+    @*                     @(Context.Request.Query["filterNullEmail"] == "true" ? "checked" : "") /> *@
+    @*                     Null Email *@
+    @*                 </label> *@
+    @*             </li> *@
+    @*             <button type="submit">Apply Filters</button> *@
+    @*         </ul> *@
+    @*     </div> *@
+    @* </form> *@
+
+
+
+
     <table class="table">
         <thead>
             <tr>
+                <th>
+                    Profile Picture
+                </th>
                 <th>
                     <a asp-action="List" asp-route-sortColumn="FirstName" asp-route-sortOrder="@(Model.SortColumn == "FirstName" && Model.SortOrder == "ASC" ? "DESC" : "ASC")">
                         First Name
@@ -99,6 +138,18 @@ else
             @foreach (var user in Model.Users)
             {
                 <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                        {
+                            Console.WriteLine(user.ProfilePictureUrl);
+                            var formattedUrl = GoogleDriveHelper.ConvertGoogleDriveLink(user.ProfilePictureUrl);
+                            <img src = @formattedUrl alt = "Profile Picture" height = "50" width = "50" >
+                        }
+                        else
+                        {
+                            <img src="https://static-00.iconduck.com/assets.00/person-icon-476x512-hr6biidg.png" alt="Profile Picture" height="50" width="50">
+                        }
+                    </td>
                     <td>
                         @user.FirstName
                     </td>
@@ -146,6 +197,20 @@ else
     </nav>
 }
 <script>
+    // Wait for the page to load
+    document.addEventListener("DOMContentLoaded", function () {
+        // Select all success alerts
+        let alerts = document.querySelectorAll(".alert-success");
+
+        alerts.forEach(alert => {
+            // Set a timeout to remove the alert after 3 seconds
+            setTimeout(() => {
+                alert.style.transition = "opacity 0.5s ease-out";
+                alert.style.opacity = "0";
+                setTimeout(() => alert.remove(), 500); // Remove from DOM after fade-out
+            }, 3000);
+        });
+    });
     function confirmDelete(userId) {
         if (confirm("Are you sure you want to delete this user?")) {
             document.getElementById("deleteUserId").value = userId;

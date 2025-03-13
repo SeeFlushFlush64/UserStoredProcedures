@@ -14,7 +14,7 @@ namespace PalaganasTechnicalExam.Repositories.Users
             _context = context;
         }
 
-        // ✅ Get all users (handles non-composable SQL issue)
+        // ✅ Get all users (Updated to include ProfilePictureUrl)
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             try
@@ -30,7 +30,7 @@ namespace PalaganasTechnicalExam.Repositories.Users
             }
         }
 
-        // ✅ Get user by ID (handles non-composable SQL issue)
+        // ✅ Get user by ID (Updated to include ProfilePictureUrl)
         public async Task<User> GetUserByIdAsync(int userId)
         {
             try
@@ -48,15 +48,16 @@ namespace PalaganasTechnicalExam.Repositories.Users
             }
         }
 
-        // ✅ Add user (Insert operation)
+        // ✅ Add user (Updated to include ProfilePictureUrl)
         public async Task AddUserAsync(User user)
         {
             try
             {
-                await _context.Database.ExecuteSqlRawAsync("EXEC AddUser @FirstName, @LastName, @Email",
+                await _context.Database.ExecuteSqlRawAsync("EXEC AddUser @FirstName, @LastName, @Email, @ProfilePictureUrl",
                     new SqlParameter("@FirstName", user.FirstName),
                     new SqlParameter("@LastName", user.LastName),
-                    new SqlParameter("@Email", user.Email));
+                    new SqlParameter("@Email", user.Email),
+                    new SqlParameter("@ProfilePictureUrl", (object?)user.ProfilePictureUrl ?? DBNull.Value));
             }
             catch (SqlException ex)
             {
@@ -65,16 +66,17 @@ namespace PalaganasTechnicalExam.Repositories.Users
             }
         }
 
-        // ✅ Update user (Update operation)
+        // ✅ Update user (Updated to include ProfilePictureUrl)
         public async Task UpdateUserAsync(User user)
         {
             try
             {
-                await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUser @UserId, @FirstName, @LastName, @Email",
+                await _context.Database.ExecuteSqlRawAsync("EXEC UpdateUser @UserId, @FirstName, @LastName, @Email, @ProfilePictureUrl",
                     new SqlParameter("@UserId", user.UserId),
                     new SqlParameter("@FirstName", user.FirstName),
                     new SqlParameter("@LastName", user.LastName),
-                    new SqlParameter("@Email", user.Email));
+                    new SqlParameter("@Email", user.Email),
+                    new SqlParameter("@ProfilePictureUrl", (object?)user.ProfilePictureUrl ?? DBNull.Value));
             }
             catch (SqlException ex)
             {
@@ -83,7 +85,7 @@ namespace PalaganasTechnicalExam.Repositories.Users
             }
         }
 
-        // ✅ Delete user (Delete operation)
+        // ✅ Delete user (No changes needed)
         public async Task DeleteUserAsync(int userId)
         {
             try
@@ -98,14 +100,15 @@ namespace PalaganasTechnicalExam.Repositories.Users
             }
         }
 
+        // ✅ Search users (Updated to include ProfilePictureUrl)
         public async Task<List<User>> SearchUsersAsync(string searchQuery)
         {
             return await _context.Users
                 .FromSqlRaw("EXEC SearchUsers @SearchQuery", new SqlParameter("@SearchQuery", searchQuery))
                 .ToListAsync();
-
         }
 
+        // ✅ Get sorted users (Updated to include ProfilePictureUrl)
         public async Task<List<User>> GetSortedUsersAsync(string? searchQuery, string sortColumn, string sortOrder, int pageNumber, int pageSize)
         {
             return await _context.Users.FromSqlRaw(
@@ -118,12 +121,10 @@ namespace PalaganasTechnicalExam.Repositories.Users
             ).ToListAsync();
         }
 
-
-
+        // ✅ Get total user count (No changes needed)
         public int GetTotalUserCount()
         {
             return _context.Users.Count();
         }
-
     }
 }

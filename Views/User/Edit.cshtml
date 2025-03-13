@@ -1,8 +1,28 @@
-﻿@model PalaganasTechnicalExam.Models.Entities.User
+﻿@using PalaganasTechnicalExam.Helpers
+@model PalaganasTechnicalExam.Models.Entities.User
+
+
 <h1>
 	Edit User
 </h1>
+<form  method="post" asp-action="Edit">
+	<input type="hidden" name="id" id="updateForm" value="@Model.UserId" />
+</form>
 <form method="post">
+	<br />
+	<div class="d-flex justify-content-center">
+		@if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+		{
+			Console.WriteLine(Model.ProfilePictureUrl);
+			var formattedUrl = GoogleDriveHelper.ConvertGoogleDriveLink(Model.ProfilePictureUrl);
+			<img src=@formattedUrl alt="Profile Picture" height="300" width="300">
+		}
+		else
+		{
+			<img src="https://static-00.iconduck.com/assets.00/person-icon-476x512-hr6biidg.png" alt="Profile Picture" height="250" width="250">
+		}
+	</div>
+	
 	<br />
 	<div class="form-group">
 		<label asp-for="UserId" class="form-label">ID</label>
@@ -26,8 +46,47 @@
 		<input type="email" class="form-control" asp-for="Email" placeholder="johndoe@gmail.com">
 		<span asp-validation-for="Email" class="text-danger"></span> <!-- Correct syntax -->
 	</div>
+	<br />
+	<div class="form-group">
+		<label asp-for="ProfilePictureUrl" class="form-label">Profile Picture URL (Optional)</label>
+		<input type="text" class="form-control" asp-for="ProfilePictureUrl" placeholder="https://drive.google.com/file/d/...">
+	</div>
 	<br/>
 	<div class="form-group">
-		<button type="submit" class="btn btn-primary">Submit</button>
+		<button type="submit" onclick="confirmUpdate(@Model.UserId)" class="btn btn-primary">Submit</button>
 	</div>
 </form>
+
+<script>
+	let initialFormData = {};
+
+	// Store initial values when the page loads
+	document.addEventListener("DOMContentLoaded", function () {
+		let formElements = document.querySelectorAll("form input");
+		formElements.forEach(input => {
+			initialFormData[input.name] = input.value;
+		});
+	});
+
+	function hasFormChanged() {
+		let formElements = document.querySelectorAll("form input");
+		for (let input of formElements) {
+			if (initialFormData[input.name] !== input.value) {
+				return true; // Form has changed
+			}
+		}
+		return false; // No changes
+	}
+
+	function confirmUpdate(userId, event) {
+		if (!hasFormChanged()) {
+			alert("No changes detected.");
+			event.preventDefault(); // Prevent form submission
+			return;
+		}
+
+		if (!confirm("Are you sure you want to update details of this user?")) {
+			event.preventDefault(); // Prevent form submission if user cancels
+		}
+	}
+</script>

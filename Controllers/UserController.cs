@@ -51,6 +51,8 @@ namespace PalaganasTechnicalExam.Controllers
         public async Task<IActionResult> List(string? searchQuery, string sortColumn = "FirstName", string sortOrder = "ASC", int pageNumber = 1)
         {
             var users = await _userRepository.GetSortedUsersAsync(searchQuery, sortColumn, sortOrder, pageNumber, PageSize);
+            var userList = users.ToList();
+         
 
             int totalUsers = _userRepository.GetTotalUserCount();
 
@@ -66,6 +68,7 @@ namespace PalaganasTechnicalExam.Controllers
 
             return View(viewModel);
         }
+
 
 
         [HttpGet]
@@ -117,6 +120,7 @@ namespace PalaganasTechnicalExam.Controllers
             user.FirstName = viewModel.FirstName;
             user.LastName = viewModel.LastName;
             user.Email = viewModel.Email;
+            user.ProfilePictureUrl = viewModel.ProfilePictureUrl;
             await _userRepository.UpdateUserAsync(user);
             TempData["UpdatedSuccessfully"] = "User updated successfully";
             return RedirectToAction("List");

@@ -27,6 +27,12 @@
 		<input type="email" class="form-control" asp-for="Email" placeholder="johndoe@gmail.com">
 		<span asp-validation-for="Email" class="text-danger"></span> <!-- Correct syntax -->
 	</div>
+	<br />
+	<div class="form-group">
+		<label asp-for="ProfilePictureUrl" class="form-label">Profile Picture URL (Optional)</label>
+		<input type="text" class="form-control" asp-for="ProfilePictureUrl" placeholder="https://drive.google.com/file/d/...">
+		
+	</div>
 	<br/>
 	<div class="form-group">
 		<button type="submit" class="btn btn-primary">Submit</button>
