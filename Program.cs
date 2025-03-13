@@ -21,6 +21,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddScoped<IValidator<AddUserViewModel>, AddUserValidator>();
+builder.Services.AddScoped<IValidator<EditUserViewModel>, EditUserValidator>();
 
 
 var app = builder.Build();

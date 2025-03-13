@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PalaganasTechnicalExam")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+03abeefc913f778626dc341cc8798b48573cbca5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1d32d45461be60160e2b7b8ce74f1cd2083e6bf0")]
 [assembly: System.Reflection.AssemblyProductAttribute("PalaganasTechnicalExam")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PalaganasTechnicalExam")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

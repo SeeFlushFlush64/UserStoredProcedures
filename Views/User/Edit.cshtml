@@ -1,27 +1,33 @@
 ﻿@using PalaganasTechnicalExam.Helpers
-@model PalaganasTechnicalExam.Models.Entities.User
+@model PalaganasTechnicalExam.Models.ViewModels.EditUserViewModel
+@* @model PalaganasTechnicalExam.Models.Entities.User *@
 
 
 <h1>
 	Edit User
 </h1>
-<form  method="post" asp-action="Edit">
-	<input type="hidden" name="id" id="updateForm" value="@Model.UserId" />
-</form>
+
+<div class="d-flex flex-column justify-content-center align-items-center">
+	@if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+	{
+		Console.WriteLine(Model.ProfilePictureUrl);
+		var formattedUrl = GoogleDriveHelper.ConvertGoogleDriveLink(Model.ProfilePictureUrl);
+		<img id="profileImage" src=@formattedUrl alt="Profile Picture" height="300" width="300">
+		<br />
+		<button type="button" class="btn btn-danger" onclick="removeProfilePicture()">Remove Picture</button>
+	}
+	else
+	{
+		<img src="https://static-00.iconduck.com/assets.00/person-icon-476x512-hr6biidg.png" alt="Profile Picture" height="250" width="250">
+		<br />
+		<button type="button" class="btn btn-primary mt-2" asp-for="ProfilePictureUrl" onclick="highlightProfilePictureInput()">Add Picture</button>
+	}
+	
+</div>
+
 <form method="post">
 	<br />
-	<div class="d-flex justify-content-center">
-		@if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
-		{
-			Console.WriteLine(Model.ProfilePictureUrl);
-			var formattedUrl = GoogleDriveHelper.ConvertGoogleDriveLink(Model.ProfilePictureUrl);
-			<img src=@formattedUrl alt="Profile Picture" height="300" width="300">
-		}
-		else
-		{
-			<img src="https://static-00.iconduck.com/assets.00/person-icon-476x512-hr6biidg.png" alt="Profile Picture" height="250" width="250">
-		}
-	</div>
+	
 	
 	<br />
 	<div class="form-group">
@@ -48,25 +54,58 @@
 	</div>
 	<br />
 	<div class="form-group">
-		<label asp-for="ProfilePictureUrl" class="form-label">Profile Picture URL (Optional)</label>
-		<input type="text" class="form-control" asp-for="ProfilePictureUrl" placeholder="https://drive.google.com/file/d/...">
+		<label for="profilePictureInput" asp-for="ProfilePictureUrl" class="form-label">Profile Picture URL (Optional)</label>
+		<input type="text" class="form-control" asp-for="ProfilePictureUrl" placeholder="https://drive.google.com/file/d/..." id="profilePictureInput">
 	</div>
 	<br/>
 	<div class="form-group">
-		<button type="submit" onclick="confirmUpdate(@Model.UserId)" class="btn btn-primary">Submit</button>
+		<button type="submit" onclick="confirmUpdate(@Model.UserId)" class="btn btn-primary">Save</button>
 	</div>
 </form>
 
 <script>
 	let initialFormData = {};
 
-	// Store initial values when the page loads
 	document.addEventListener("DOMContentLoaded", function () {
 		let formElements = document.querySelectorAll("form input");
 		formElements.forEach(input => {
 			initialFormData[input.name] = input.value;
 		});
+
+		// Listen for form submission and reset the initial form data
+		document.querySelector("form").addEventListener("submit", function () {
+			let formElements = document.querySelectorAll("form input");
+			formElements.forEach(input => {
+				initialFormData[input.name] = input.value; // Update the stored values
+			});
+		});
 	});
+
+	function confirmUpdate(event) {
+		if (!hasFormChanged()) {
+			alert("No changes detected.");
+			event.preventDefault(); // Prevent form submission
+			return false;
+		}
+
+		if (!confirm("Are you sure you want to update details of this user?")) {
+			event.preventDefault(); // Prevent form submission if user cancels
+			return false;
+		}
+	}
+
+	function highlightProfilePictureInput() {
+		let inputField = document.getElementById("profilePictureInput");
+		if (inputField) {
+			inputField.focus();
+			inputField.classList.add("border", "border-warning", "border-3");
+
+			// Remove the highlight after 2 seconds
+			setTimeout(() => {
+				inputField.classList.remove("border", "border-warning", "border-3");
+			}, 2000);
+		}
+	}
 
 	function hasFormChanged() {
 		let formElements = document.querySelectorAll("form input");
@@ -78,15 +117,34 @@
 		return false; // No changes
 	}
 
-	function confirmUpdate(userId, event) {
-		if (!hasFormChanged()) {
-			alert("No changes detected.");
-			event.preventDefault(); // Prevent form submission
-			return;
-		}
+	function removeProfilePicture() {
+		if (confirm("Are you sure you want to remove the profile picture?")) {
+			let inputField = document.getElementById("profilePictureInput");
+			let profileImage = document.getElementById("profileImage");
 
-		if (!confirm("Are you sure you want to update details of this user?")) {
-			event.preventDefault(); // Prevent form submission if user cancels
+			if (inputField) inputField.value = ""; // Clear the profile picture URL
+			if (profileImage) profileImage.src = "https://static-00.iconduck.com/assets.00/person-icon-476x512-hr6biidg.png"; // Change to default
 		}
 	}
+
+	// Warn user if they try to leave without saving changes
+	window.addEventListener("beforeunload", function (event) {
+		if (hasFormChanged()) {
+			event.preventDefault();
+			event.returnValue = ""; // Show default browser warning
+		}
+	});
+
+	// Custom exit confirmation dialog
+	window.addEventListener("popstate", function (event) {
+		if (hasFormChanged()) {
+			let userChoice = confirm("You have unsaved changes. Do you want to apply them before leaving?");
+
+			if (userChoice) {
+				document.querySelector("form").submit(); // Submit the form before leaving
+			}
+		}
+	});
+
+
 </script>

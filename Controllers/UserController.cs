@@ -15,11 +15,13 @@ namespace PalaganasTechnicalExam.Controllers
     {
         private readonly IUserRepository _userRepository;
         private readonly IValidator<AddUserViewModel> _addUserValidator;
+        private readonly IValidator<EditUserViewModel> _editUserValidator;
         private const int PageSize = 12;
-        public UserController(IUserRepository userRepository, IValidator<AddUserViewModel> addUserValidator)
+        public UserController(IUserRepository userRepository, IValidator<AddUserViewModel> addUserValidator, IValidator<EditUserViewModel> editUserValidator)
         {
             _userRepository = userRepository;
             _addUserValidator = addUserValidator;
+            _editUserValidator = editUserValidator;
         }
 
 
@@ -98,7 +100,8 @@ namespace PalaganasTechnicalExam.Controllers
             {
                 FirstName = viewModel.FirstName,
                 LastName = viewModel.LastName,
-                Email = viewModel.Email
+                Email = viewModel.Email,
+                ProfilePictureUrl = viewModel.ProfilePictureUrl
             };
 
             await _userRepository.AddUserAsync(user);
@@ -108,15 +111,44 @@ namespace PalaganasTechnicalExam.Controllers
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
-        {
+        {   
             var user = await _userRepository.GetUserByIdAsync(id);
-            return View(user);
+            var userViewModel = new EditUserViewModel
+            {
+                UserId = user.UserId,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                ProfilePictureUrl = user.ProfilePictureUrl
+            };
+            return View(userViewModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditUserViewModel viewModel)
         {
             var user = await _userRepository.GetUserByIdAsync(viewModel.UserId);
+            var result = await _editUserValidator.ValidateAsync(viewModel);
+            
+            if (!result.IsValid)
+            {
+
+                foreach (var error in result.Errors)
+                {
+                    Console.WriteLine($"Validation Error: {error.PropertyName} - {error.ErrorMessage}");
+                }
+
+                result.AddToModelState(this.ModelState);
+                return View("Edit", viewModel);
+            }
+            // Check if any changes were made
+            if (user.FirstName == viewModel.FirstName &&
+                user.LastName == viewModel.LastName &&
+                user.Email == viewModel.Email &&
+                user.ProfilePictureUrl == viewModel.ProfilePictureUrl)
+            {
+                return RedirectToAction("List"); // No update needed, just redirect
+            }
             user.FirstName = viewModel.FirstName;
             user.LastName = viewModel.LastName;
             user.Email = viewModel.Email;

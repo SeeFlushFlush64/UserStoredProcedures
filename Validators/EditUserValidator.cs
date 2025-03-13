@@ -7,17 +7,29 @@ namespace PalaganasTechnicalExam.Validators
     {
         public EditUserValidator()
         {
-            RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("First Name is required.")
-                .MaximumLength(50).WithMessage("First Name cannot exceed 50 characters.");
+            RuleFor(u => u.FirstName)
+                .MaximumLength(20).WithMessage("First Name cannot be longer than 20 characters!")
+                .NotNull().WithMessage("First Name cannot be empty!") // Changed from NotEmpty() to NotNull()
+                .NotEmpty().WithMessage("First Name cannot be empty!")
+                .Matches(@"^[a-zA-Z\s]+$").WithMessage("First Name can only contain letters!");
+            RuleFor(u => u.LastName)
+                .MaximumLength(20).WithMessage("Last Name cannot be longer than 20 characters!")
+                .NotNull().WithMessage("Last Name cannot be empty!") // Changed from NotEmpty() to NotNull()
+                .NotEmpty().WithMessage("Last Name cannot be empty!")
+                .Matches(@"^[a-zA-Z\s]+$").WithMessage("Last Name can only contain letters!");
+            RuleFor(u => u.Email)
+                .EmailAddress().WithMessage("Invalid email format!")
+                .NotNull().WithMessage("Email cannot be empty!") // Changed from NotEmpty() to NotNull()
+                .NotEmpty().WithMessage("Email cannot be empty!");
+            RuleFor(u => u.ProfilePictureUrl)
+                .Must(BeAValidUrl).WithMessage("Profile Picture URL must be a valid URL!")
+                .When(u => !string.IsNullOrEmpty(u.ProfilePictureUrl)); // Only validate if not empty
 
-            RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("Last Name is required.")
-                .MaximumLength(50).WithMessage("Last Name cannot exceed 50 characters.");
-
-            RuleFor(x => x.Email)
-                .NotEmpty().WithMessage("Email is required.")
-                .EmailAddress().WithMessage("Invalid email format.");
         }
+        private bool BeAValidUrl(string url)
+        {
+            return Uri.TryCreate(url, UriKind.Absolute, out _);
+        }
+
     }
 }
